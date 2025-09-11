@@ -1,22 +1,30 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../shared/hooks/redux";
-import { fetchBooks } from "../../entities/books/model/BookSlice";
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { fetchBooks, loadMore } from "../../entities/books/model/BookSlice";
+import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
 import { MyLoader } from "../../shared/ui/Loader";
 
 export const BooksPage = () => {
   const dispatch = useAppDispatch();
   const { books,isLoading } = useAppSelector((state) => state.bookReducer);
-
+  const [searchParam,setSearchParam] = useState('book')
   useEffect(() => {
-    dispatch(fetchBooks());
+    dispatch(fetchBooks('books'));
   }, [dispatch]);
+  const loadMoreBooks =() => {
+    try {
+      dispatch(loadMore('books')) 
+    } catch (error) {
+      console.log(error)
+    }
+  }
   if(isLoading) {
     return <MyLoader/>
   }
   return (
     <>
       <Box sx={{padding:"20px"}}>
+        <TextField fullWidth variant="outlined" label='Поиск' sx={{marginY:"10px"}}/>
         <TableContainer variant="outlined" component={Paper}>
           <Table >
             <TableHead>
@@ -28,21 +36,22 @@ export const BooksPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-          {books.map((row) => (
+          {books.map((book,index) => (
             <TableRow
-              key={row.id}
+              key={`${book.id}${index}`}
             >
               <TableCell sx={{maxWidth:'300px'}} component="th" scope="row">
-                {row.volumeInfo.title}
+                {book.volumeInfo.title}
               </TableCell>
-              <TableCell >{row.volumeInfo.authors}</TableCell>
-              <TableCell >{row.volumeInfo.publishedDate}</TableCell>
-              <TableCell >{row.volumeInfo.categories}</TableCell>
+              <TableCell >{book.volumeInfo.authors}</TableCell>
+              <TableCell >{book.volumeInfo.publishedDate}</TableCell>
+              <TableCell >{book.volumeInfo.categories}</TableCell>
             </TableRow>
           ))}
         </TableBody>
           </Table>
         </TableContainer>
+        <Button onClick={loadMoreBooks}>Загрузить больше</Button>
       </Box>
     </>
   );

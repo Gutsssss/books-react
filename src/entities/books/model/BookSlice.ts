@@ -2,19 +2,49 @@ import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/tool
 import type { IBook } from "../types";
 import axios from "axios";
 
-
+let startIndex = 0
 export const fetchBooks = createAsyncThunk(
     'books/fetchAll',
-    async(_,thunkAPI) => {
+    async(q:string,thunkAPI) => {
         try {
-            const {data} = await axios.get('https://www.googleapis.com/books/v1/volumes?q=books&maxResults=10')
+            const {data} = await axios.get('https://www.googleapis.com/books/v1/volumes',
+                {
+                    params:{
+                        q:q,
+                        startIndex:startIndex,
+                        maxResults:10
+                        
+                    }
+                }
+            )
             return data.items
         } catch (error) {
             return thunkAPI.rejectWithValue(`Не удалось загрузить задачу, ${error}`);
         }
     }
-
 )
+
+export const loadMore = createAsyncThunk(
+    'books/loadMore',
+    async(q:string,thunkApi) => {
+        startIndex = startIndex + 10
+        try {
+            const {data} = await axios.get('https://www.googleapis.com/books/v1/volumes',
+                {
+                    params:{
+                        startIndex:startIndex,
+                        maxResults:10,
+                        q
+                    }
+                }
+            )
+            return data.items
+        } catch (error) {
+            return thunkApi.rejectWithValue(`Не удалось загрузить больше книг, ${error}`)
+        }
+    }
+)
+
 
 interface BookState {
     books:IBook[],
@@ -46,6 +76,11 @@ export const bookSlice = createSlice({
         .addCase(fetchBooks.rejected, (state:BookState,action) => {
             state.isLoading = false
             state.error = action.error.message || 'произошла ошибка'
+        })
+
+        .addCase(loadMore.fulfilled, (state:BookState,action:PayloadAction<IBook[]>) => {
+            state.isLoading = false
+            state.books = [...state.books,...action.payload]
         })
     }
 })

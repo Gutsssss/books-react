@@ -1,7 +1,7 @@
 export interface IBook {
-    id:number,
+    id:string,
     volumeInfo:{
-        title:string,
+    title:string,
     description:string,
     authors:string[],
     publishedDate:string,

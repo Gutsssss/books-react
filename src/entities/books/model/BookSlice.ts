@@ -72,7 +72,7 @@ export const loadMore = createAsyncThunk(
   }
 );
 
-interface BookState {
+export interface BookState {
   books: IBook[];
   currentBook: IBook | null;
   isLoading: boolean;

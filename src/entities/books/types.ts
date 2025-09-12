@@ -3,8 +3,8 @@ export interface IBook {
     volumeInfo:{
     title:string,
     description:string,
-    authors:string[],
-    publishedDate:string,
-    categories:string[]
+    authors?:string[],
+    publishedDate?:string,
+    categories?:string[]
     }
 }

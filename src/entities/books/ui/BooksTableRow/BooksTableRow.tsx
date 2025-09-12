@@ -21,7 +21,8 @@ export const BooksTableRow = ({ book, index }: BooksTableRowProps) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const normalizeAuthors = book?.volumeInfo.authors?.join(', ')
+  const normalizeCategory = book?.volumeInfo.categories?.join(', ')
   return (
     <>
       <TableRow key={`${book.id}${index}`}>
@@ -39,9 +40,9 @@ export const BooksTableRow = ({ book, index }: BooksTableRowProps) => {
         <TableCell sx={{ maxWidth: "300px" }} scope="row">
           {book.volumeInfo.title}
         </TableCell>
-        <TableCell>{book.volumeInfo.authors}</TableCell>
+        <TableCell sx={{ maxWidth: "300px" }}>{normalizeAuthors}</TableCell>
         <TableCell>{book.volumeInfo.publishedDate}</TableCell>
-        <TableCell>{book.volumeInfo.categories}</TableCell>
+        <TableCell>{normalizeCategory}</TableCell>
       </TableRow>
       
       <ActionMenu 

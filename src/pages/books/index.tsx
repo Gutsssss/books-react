@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../shared/hooks/redux";
 import { closeDialog, fetchBooks, loadMore } from "../../entities/books/model/BookSlice";
 import {
@@ -14,10 +14,16 @@ import {
 } from "@mui/material";
 import { BooksTable } from "../../entities/books/ui/BooksTable/BooksTable";
 import { useDebounce } from "../../shared/hooks/useDebounce";
+import { MyLoader } from "../../shared/ui/Loader";
 export const BooksPage = () => {
   const dispatch = useAppDispatch();
-  const load = useRef(null)
-  const { books, isLoading, moreBooksLoading, currentBook, isDialogOpen } = useAppSelector(
+  
+  const { books, 
+    isLoading, 
+    moreBooksLoading, 
+    currentBook, 
+    isDialogOpen,
+    hasMore  } = useAppSelector(
     (state) => state.bookReducer
   );
   const [searchParam, setSearchParam] = useState("");
@@ -30,8 +36,8 @@ export const BooksPage = () => {
     else {
       dispatch(fetchBooks(debounceSearch))
     }
-    console.log(load.current)
-  }, [dispatch, debounceSearch,load]);
+  }, [dispatch, debounceSearch]);
+
   const loadMoreBooks = () => {
     try {
       if (!debounceSearch.trim()) {
@@ -45,6 +51,12 @@ export const BooksPage = () => {
       console.log(error);
     }
   };
+  const handleLoadMore = useCallback(() => {
+
+    if(!moreBooksLoading && hasMore && searchParam.trim() !== '') {
+      dispatch(loadMore(searchParam))
+    }
+  },[dispatch, searchParam, moreBooksLoading, hasMore])
   const handleCloseDialog = () => {
     dispatch(closeDialog());
   };
@@ -59,7 +71,17 @@ export const BooksPage = () => {
           label="Поиск"
           sx={{ marginY: "10px" }}
         />
-        <BooksTable books={books} loading={isLoading} />
+        <BooksTable books={books} 
+        loading={isLoading} 
+        onLoadMore={handleLoadMore}
+        hasMore={hasMore} />
+
+        {moreBooksLoading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', padding: 2 }}>
+          <MyLoader/>
+        </Box>
+      )}
+
         {currentBook && (
           <Dialog
             open={isDialogOpen}
@@ -101,7 +123,6 @@ export const BooksPage = () => {
           </Button>
         )}
       </Box>
-      <span ref={load} style={{background:"red"}}>qwe</span>
     </>
   );
 };

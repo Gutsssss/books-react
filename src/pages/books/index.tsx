@@ -64,6 +64,7 @@ export const BooksPage = () => {
     <>
       <Box sx={{ padding: "20px" }}>
         <TextField
+          data-testid="search-input"
           fullWidth
           value={searchParam}
           onChange={(e) => setSearchParam(e.target.value)}
@@ -72,6 +73,7 @@ export const BooksPage = () => {
           sx={{ marginY: "10px" }}
         />
         <BooksTable books={books} 
+        data-testid="books-table"
         loading={isLoading} 
         onLoadMore={handleLoadMore}
         hasMore={hasMore} />
@@ -113,6 +115,7 @@ export const BooksPage = () => {
         )}
         {!isLoading && (
           <Button
+          data-testid="load-more-button"
             sx={{ marginY: "10px" }}
             loadingPosition="start"
             loading={moreBooksLoading}
@@ -126,4 +129,3 @@ export const BooksPage = () => {
     </>
   );
 };
-

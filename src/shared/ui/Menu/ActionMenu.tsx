@@ -72,7 +72,7 @@ export const ActionMenu = ({
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseEditDialog}>Cancel</Button>
-          <Button onClick={handleSaveTitle}>Save</Button>
+          <Button disabled={!newTitle.trim() || newTitle.length >= 250} onClick={handleSaveTitle}>Save</Button>
         </DialogActions>
       </Dialog>
       </>

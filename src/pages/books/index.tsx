@@ -91,7 +91,7 @@ export const BooksPage = () => {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <DialogTitle id="alert-dialog-title">
+            <DialogTitle id="alert-dialog-title" sx={{wordBreak:'break-all'}}>
               {currentBook.volumeInfo.title}
             </DialogTitle>
             <DialogContent>
@@ -106,7 +106,9 @@ export const BooksPage = () => {
                   return <Typography key={`${author}${index}`}>{author}</Typography>
                 })}
               </DialogContentText> : <DialogContentText>Авторы отсутствуют</DialogContentText>}
-
+              <DialogContentText id="alert-dialog-categories">
+                <span style={{ fontWeight: "bold" }}>Категории:</span> {currentBook.volumeInfo.categories || 'Категории отсутствуют'}
+              </DialogContentText>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleCloseDialog}>Закрыть</Button>

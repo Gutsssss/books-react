@@ -37,7 +37,7 @@ export const BooksTableRow = ({ book, index }: BooksTableRowProps) => {
             <MoreVertIcon/>
           </IconButton>
         </TableCell>
-        <TableCell sx={{ maxWidth: "300px" }} scope="row">
+        <TableCell sx={{ maxWidth: "300px",wordBreak:'break-all' }} scope="row">
           {book.volumeInfo.title}
         </TableCell>
         <TableCell sx={{ maxWidth: "300px" }}>{normalizeAuthors}</TableCell>
